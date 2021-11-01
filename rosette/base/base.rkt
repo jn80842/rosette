@@ -22,6 +22,7 @@
      ; core/real.rkt
      @integer? @real? @= @< @<= @>= @> 
      @+ @* @- @/ @quotient @remainder @modulo @abs
+     @euclidean-div @euclidean-mod
      @integer->real @real->integer @int? 
      ; core/numerics.rkt
      @number? @positive? @negative? @zero? @even? @odd?

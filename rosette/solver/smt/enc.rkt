@@ -8,7 +8,8 @@
          (only-in "../../base/core/bool.rkt" @! @&& @|| @=> @<=> @forall @exists)
          (only-in "../../base/core/real.rkt" 
                   @integer? @real? @= @< @<= @>= @> 
-                  @+ @* @- @/ @quotient @remainder @modulo 
+                  @+ @* @- @/ @quotient @remainder @modulo
+                  @euclidean-div @euclidean-mod
                   @abs @integer->real @real->integer @int?)
          (only-in "../../base/core/bitvector.rkt" 
                   bitvector? bv bitvector-size 
@@ -104,6 +105,7 @@
   [@+ $+] [@* $*] [@- $-] [@/ $/]  
   [@quotient $quotient] [@remainder $remainder] [@modulo $modulo]
   [@integer->real $to_real] [@real->integer $to_int] [@int? $is_int]
+  [@euclidean-div $euclidean-div] [@euclidean-mod $euclidean-mod]
   ; bitvector
   [@bveq $=] [@bvslt $bvslt] [@bvsle $bvsle] [@bvult $bvult] [@bvule $bvule] 
   [@bvnot $bvnot] [@bvor $bvor] [@bvand $bvand] [@bvxor $bvxor] 
@@ -111,10 +113,16 @@
   [@bvneg $bvneg] [@bvadd $bvadd] [@bvmul $bvmul] [@bvudiv $bvudiv] [@bvsdiv $bvsdiv]
   [@bvurem $bvurem] [@bvsrem $bvsrem] [@bvsmod $bvsmod] [@concat $concat])
 
+(define ($euclidean-div tx ty)
+  ($ite ($= ty 0) 0 ($div tx ty)))
+
+(define ($euclidean-mod tx ty)
+  ($ite ($= ty 0) 0 ($mod tx ty)))
 
 (define ($quotient tx ty)
-  (define tx/ty ($div ($abs tx) ($abs ty)))
-  ($ite ($= ($< tx 0) ($< ty 0)) tx/ty ($- tx/ty)))
+  ($div tx ty))
+;  (define tx/ty ($div ($abs tx) ($abs ty)))
+;  ($ite ($= ($< tx 0) ($< ty 0)) tx/ty ($- tx/ty)))
 
 (define ($remainder tx ty)
   (define tx%ty ($mod ($abs tx) ($abs ty)))

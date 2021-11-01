@@ -5,6 +5,7 @@
          "merge.rkt" "safe.rkt" "lift.rkt" "forall.rkt")
 
 (provide @integer? @real? @= @< @<= @>= @> @+ @* @- @/ @quotient @remainder @modulo @abs
+         @euclidean-div @euclidean-mod
          @integer->real @real->integer @int?
          lift-op numeric-coerce T*->integer? T*->real?)
 
@@ -311,6 +312,30 @@
 (define-lifted-int-operator @quotient $quotient quotient)
 (define-lifted-int-operator @remainder $remainder remainder)
 (define-lifted-int-operator @modulo $modulo modulo)
+
+;; ----------------- Halide-specific Operators ----------------- ;;
+
+(define (div-in-Z-val x y)
+  (ite ($= ($modulo x y) 0) 0 1))
+
+;; euclidean definition of division, but returns 0 when y is 0
+(define ($euclidean-div x y)
+  (match* (x y)
+    [(_ (≈ 0)) 0]
+    [(_ _) (ite (and ($> 0 x) ($> 0 y))
+                ($+ ($- ($quotient ($abs x) y)) (div-in-Z-val x y))
+                (ite (and ($> 0 x) (not ($= y 0)))
+                      ($- ($- ($quotient ($abs x) y)) (div-in-Z-val x y))
+                ($quotient x y)))]))
+
+;; euclidean definition of modulo, but returns 0 when y is 0
+(define ($euclidean-mod x y)
+  (match* (x y)
+    [(_ (≈ 0)) 0]
+    [(_ _) ($modulo x y)]))
+
+(define-lifted-operator @euclidean-div $euclidean-div T*->integer?)
+(define-lifted-operator @euclidean-mod $euclidean-mod T*->integer?)
 
 ;; ----------------- Real Operators ----------------- ;; 
 
